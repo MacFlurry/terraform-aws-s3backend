@@ -14,20 +14,20 @@ locals {
 # Provides a Resource Group
 resource "aws_resourcegroups_group" "resourcegroups_group" {
   name = "${local.namespace}-group"
-  # Populate the resource group based on a tagging schema
+
   resource_query {
-      query = <<-JSON
-  {
-    "ResourceTypeFilters": [
-      "AWS::AllSupported"
-    ],
-    "TagFilters": [
-      {
-        "Key": "ResourceGroup",
-        "Values": ["${local.namespace}"]
-      }
-    ]
-  }
+    query = <<-JSON
+{
+  "ResourceTypeFilters": [
+    "AWS::AllSupported"
+  ],
+  "TagFilters": [
+    {
+      "Key": "ResourceGroup",
+      "Values": ["${local.namespace}"]
+    }
+  ]
+}
   JSON
   }
 }
