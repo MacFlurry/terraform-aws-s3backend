@@ -2,9 +2,9 @@
 data "aws_region" "current" {}
 
 resource "random_string" "rand" {
-  length = 24
+  length  = 24
   special = false
-  upper = false
+  upper   = false
 }
 
 locals {
@@ -33,13 +33,13 @@ resource "aws_resourcegroups_group" "resourcegroups_group" {
 }
 
 resource "aws_kms_key" "kms_key" {
-  tags {
+  tags = {
     ResourceGroup = local.namespace
   }
 }
 
 resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "${local.namespace}-state-bucket"
+  bucket        = "${local.namespace}-state-bucket"
   force_destroy = var.force_destroy_state
 
   versioning {
@@ -49,27 +49,27 @@ resource "aws_s3_bucket" "s3_bucket" {
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
+        sse_algorithm     = "aws:kms"
         kms_master_key_id = aws_kms_key.kms_key.arn
       }
     }
   }
 
-  tags {
+  tags = {
     ResourceGroup = local.namespace
   }
 }
 
 resource "aws_dynamodb_table" "dynamodb_table" {
   hash_key = "LockID"
-  name = "${local.namespace}-state-lock"
+  name     = "${local.namespace}-state-lock"
   # Provision a serverless database for state locking
   billing_mode = "PAY_PER_REQUEST"
   attribute {
     name = "LockID"
     type = "S"
   }
-  tags {
+  tags = {
     ResourceGroup = local.namespace
   }
 }
